@@ -8,18 +8,21 @@ import dbcontroller
 
 class program:
 
-
     def __init__(self, window):
 
         self.wind = window
         self.wind.title('Roads')
 
         #creating frame
-        frame = LabelFrame(self.wind, text = 'Rutas disponibles')
+        frame = LabelFrame(self.wind, text = 'Rutas')
         frame.grid(row = 0, column = 0, columnspan = 3, pady = 20)
 
-        ttk.Button(text = 'Agregar nueva ruta').grid(row = 1, column = 0)
-        ttk.Button(text = 'Eliminar ruta').grid(row = 1, column = 1)
+        ttk.Button(frame,text = 'Agregar nueva ruta',command = self.add_rute).grid(row = 2, column = 0)
+        ttk.Button(frame,text = 'Eliminar ruta').grid(row = 2, column = 1)
+
+        Label(frame, text = 'Name: ').grid(row = 1, column = 0)
+        self.name = Entry(frame)
+        self.name.grid(row = 1, column = 1)
 
         #Combobox comienzo
         self.box_value = StringVar()
@@ -62,11 +65,6 @@ class program:
         var = self.box_value.get()
         var2 = self.box_value2.get()
 
-        query = 'SELECT name from places WHERE name =?'
-        consulta = self.run_query(query, (var, ))
-
-        query = 'SELECT name from places WHERE name =?'
-        consulta = self.run_query(query, (var2, ))
 
         var = var.replace(" ","+")
         var2 = var.replace(" ","+")
@@ -75,6 +73,20 @@ class program:
 
         
         webbrowser.open(cadena, new=2, autoraise=True)
+    
+    def validation(self):
+        return len(self.name.get()) != 0 
+    
+    def add_rute(self):
+        if self.validation():
+            query = 'INSERT INTO places VALUES(NULL, ?)'
+            parameters = (self.name.get(),)
+            self.run_query(query, parameters)
+            self.get_products()
+            print('data saved')
+        
+
+  
     
 
 if __name__ == '__main__':
